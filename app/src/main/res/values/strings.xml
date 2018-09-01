@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">BrailyApp</string>
+    <string name="select_language">Selecciona un lenguaje</string>
+    <string name="record">Grabar</string>
+    <string name="stop">Detener</string>
+
+
+
+    <string name="enviar">Enviar</string>
+
+
+    <array name="languages">
+        <item>Español</item>
+        <item>Inglés</item>
+        <item>Portugués</item>
+    </array>
+</resources>
