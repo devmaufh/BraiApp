@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,7 +18,18 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 
+import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneHelper;
+import com.ibm.watson.developer_cloud.android.library.audio.MicrophoneInputStream;
+import com.ibm.watson.developer_cloud.android.library.audio.utils.ContentType;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.SpeechToText;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.model.RecognizeOptions;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.model.SpeechRecognitionResults;
+import com.ibm.watson.developer_cloud.speech_to_text.v1.websocket.BaseRecognizeCallback;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 import maufdh.dev.brailyapp.Watson.WatsonSpeechToText;
@@ -38,7 +50,7 @@ public class MainActivity extends AppCompatActivity{
       btnEnviar.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-             // Toast.makeText(MainActivity.this, WatsonSpeechToText.getText(pathSave), Toast.LENGTH_SHORT).show();
+                  Toast.makeText(MainActivity.this,"", Toast.LENGTH_SHORT).show();
           }
       });
     }
@@ -47,6 +59,8 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         bindUI();
         if (checkPermissionFromDevice()) {
             btnRecord.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +103,7 @@ public class MainActivity extends AppCompatActivity{
         mediaRecorder.setOutputFile(pathSave);
     }
 
+
     private void requestPermission(){
         ActivityCompat.requestPermissions(this,new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -116,7 +131,13 @@ public class MainActivity extends AppCompatActivity{
         int record_audio_result= ContextCompat.checkSelfPermission(this,Manifest.permission.RECORD_AUDIO);
         return write_external_storage_result==PackageManager.PERMISSION_GRANTED&&
                 record_audio_result==PackageManager.PERMISSION_GRANTED;
-
+    }
+    private void recordMessage(){
+        SpeechToText speechToText= new SpeechToText();
+        speechToText.setUsernameAndPassword("","");
+        MicrophoneHelper microphoneHelper = new MicrophoneHelper(this);
+        MicrophoneInputStream mInputStream = microphoneHelper.getInputStream(false);
+        //speechToText.recognizeUsingWebSocket(new MicrophoneInputStream,null,new BaseRecognizeCallback(){        });
     }
 
 }
